@@ -9,6 +9,8 @@ public class Bullet : MonoBehaviour {
 
     public GameObject explosionEffectPrefabs;
 
+    private float distanceArriveTarget = 1.2f;
+
     private Transform target;
 
     public void SetTarget(Transform _target)
@@ -20,14 +22,13 @@ public class Bullet : MonoBehaviour {
     {
         transform.LookAt(target.position);
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
-    }
 
-    void OnTriggerEnter(Collider col)
-    {
-        if(col.tag == "Enemy")
+        Vector3 dir = target.position - transform.position;
+        if (dir.magnitude < distanceArriveTarget)
         {
-            col.GetComponent<Enemy>().TakeDamage(damage);
-            GameObject.Instantiate(explosionEffectPrefabs, transform.position, transform.rotation);
+            target.GetComponent<Enemy>().TakeDamage(damage);
+            GameObject effect = GameObject.Instantiate(explosionEffectPrefabs, transform.position, transform.rotation);
+            Destroy(effect, 1);
             Destroy(this.gameObject);
         }
     }
