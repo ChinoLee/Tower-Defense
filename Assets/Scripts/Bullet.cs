@@ -20,6 +20,12 @@ public class Bullet : MonoBehaviour {
 
     void Update()
     {
+        if(target == null)
+        {
+            Die();
+            return;
+        }
+
         transform.LookAt(target.position);
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
@@ -27,9 +33,14 @@ public class Bullet : MonoBehaviour {
         if (dir.magnitude < distanceArriveTarget)
         {
             target.GetComponent<Enemy>().TakeDamage(damage);
-            GameObject effect = GameObject.Instantiate(explosionEffectPrefabs, transform.position, transform.rotation);
-            Destroy(effect, 1);
-            Destroy(this.gameObject);
+            Die();
         }
+    }
+
+    void Die()
+    {
+        GameObject effect = GameObject.Instantiate(explosionEffectPrefabs, transform.position, transform.rotation);
+        Destroy(effect, 1);
+        Destroy(this.gameObject);
     }
 }
